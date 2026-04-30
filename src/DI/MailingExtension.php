@@ -22,6 +22,7 @@ class MailingExtension extends CompilerExtension
 	public function getConfigSchema(): Schema
 	{
 		return Expect::structure([
+			'defaultSender' => Expect::string(),
 			'template' => Expect::structure([
 				'defaults' => Expect::arrayOf('mixed')->default(['layout' => '@@default']),
 				'config' => Expect::arrayOf('mixed')->default(['layout' => '@@default']),
@@ -36,7 +37,8 @@ class MailingExtension extends CompilerExtension
 
 		$builder->addDefinition($this->prefix('builderFactory'))
 			->setType(IMailBuilderFactory::class)
-			->setFactory(MailBuilderFactory::class);
+			->setFactory(MailBuilderFactory::class)
+			->addSetup('setDefaultSender', [$config->defaultSender]);
 
 		$builder->addDefinition($this->prefix('sender'))
 			->setType(IMailSender::class)
